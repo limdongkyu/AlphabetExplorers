@@ -7,11 +7,17 @@ const isWebSpeechSupported = (): boolean => {
   return 'speechSynthesis' in window;
 };
 
-// 삼성 브라우저 체크
-const isSamsungBrowser = (): boolean => {
+// 삼성 브라우저 체크 (더 넓은 범위로 체크)
+export const isSamsungBrowser = (): boolean => {
   if (typeof window === 'undefined') return false;
   const userAgent = navigator.userAgent.toLowerCase();
-  return userAgent.includes('samsungbrowser') || userAgent.includes('samsung internet');
+  // 다양한 삼성 브라우저 식별자 체크
+  return (
+    userAgent.includes('samsungbrowser') || 
+    userAgent.includes('samsung internet') ||
+    userAgent.includes('samsung') && userAgent.includes('mobile') && !userAgent.includes('chrome') ||
+    (userAgent.includes('android') && userAgent.includes('samsung') && !userAgent.includes('chrome'))
+  );
 };
 
 // Web Speech API를 사용한 TTS (1순위)
@@ -126,6 +132,4 @@ export const getBrowserName = (): string => {
   return 'unknown';
 };
 
-// 삼성 브라우저 체크 함수 export
-export { isSamsungBrowser };
 

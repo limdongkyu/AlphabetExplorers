@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { alphabetData, saveProgress, getLetterProgress, type AlphabetData } from '@/lib/alphabetData';
-import { speakText, stopSpeaking, isSpeechSupported } from '@/lib/tts';
+import { speakText, stopSpeaking } from '@/lib/tts';
 
 export default function LearnPage() {
   const [currentLetterIndex, setCurrentLetterIndex] = useState(0);
@@ -23,17 +23,11 @@ export default function LearnPage() {
   };
 
   const handleSpeakLetter = (letter: string) => {
-    const success = speakText(letter);
-    if (!success && !isSpeechSupported()) {
-      alert('현재 브라우저에서는 음성 기능을 사용할 수 없어요.\n크롬 브라우저를 사용해주세요!');
-    }
+    speakText(letter);
   };
 
   const handleSpeakName = (name: string) => {
-    const success = speakText(name);
-    if (!success && !isSpeechSupported()) {
-      alert('현재 브라우저에서는 음성 기능을 사용할 수 없어요.\n크롬 브라우저를 사용해주세요!');
-    }
+    speakText(name);
   };
 
   const handleComplete = () => {
@@ -160,12 +154,7 @@ export default function LearnPage() {
                 {currentLetter.words.map((word, index) => (
                   <button
                     key={index}
-                    onClick={() => {
-                      const success = speakText(word.word);
-                      if (!success && !isSpeechSupported()) {
-                        alert('현재 브라우저에서는 음성 기능을 사용할 수 없어요.\n크롬 브라우저를 사용해주세요!');
-                      }
-                    }}
+                    onClick={() => speakText(word.word)}
                     className="card p-3 md:p-4 active:scale-95 transition-transform text-center touch-manipulation min-h-[140px] sm:min-h-[160px]"
                     style={{ WebkitTapHighlightColor: 'transparent' }}
                   >

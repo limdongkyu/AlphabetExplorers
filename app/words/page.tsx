@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { alphabetData, type AlphabetData, type Word } from '@/lib/alphabetData';
-import { speakText, isSpeechSupported } from '@/lib/tts';
+import { speakText } from '@/lib/tts';
 
 export default function WordsPage() {
   const [selectedLetter, setSelectedLetter] = useState<AlphabetData | null>(null);
@@ -21,10 +21,7 @@ export default function WordsPage() {
 
   const handleWordClick = (word: Word) => {
     setSelectedWord(word);
-    const success = speakText(word.word);
-    if (!success && !isSpeechSupported()) {
-      alert('현재 브라우저에서는 음성 기능을 사용할 수 없어요.\n크롬 브라우저를 사용해주세요!');
-    }
+    speakText(word.word);
   };
 
   return (
@@ -131,10 +128,7 @@ export default function WordsPage() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          const success = speakText(word.word);
-                          if (!success && !isSpeechSupported()) {
-                            alert('현재 브라우저에서는 음성 기능을 사용할 수 없어요.\n크롬 브라우저를 사용해주세요!');
-                          }
+                          speakText(word.word);
                         }}
                         className="px-3 sm:px-4 py-2 bg-blue-500 text-white rounded-full active:bg-blue-600 transition-colors min-h-[44px] touch-manipulation text-sm sm:text-base"
                         style={{ WebkitTapHighlightColor: 'transparent' }}

@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import BrowserWarning from "@/components/BrowserWarning";
 
 export const metadata: Metadata = {
   title: "알파벳 탐험대 - Alphabet Explorers",
@@ -35,6 +36,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className="font-sans antialiased touch-pan-y">
+        <BrowserWarning />
         {children}
       </body>
     </html>

@@ -1,0 +1,109 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    /* iOS Safari 바운스 스크롤 방지 */
+    height: 100%;
+    /* 모바일에서 텍스트 선택 방지 (버튼 클릭 오류 방지) */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    /* 부드러운 스크롤 */
+    scroll-behavior: smooth;
+    /* iOS safe area 대응 */
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+
+  body {
+    @apply bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 min-h-screen;
+    /* 스크롤 가능하도록 */
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    /* 모바일 성능 최적화 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* iOS 스크롤 성능 최적화 */
+    -webkit-overflow-scrolling: touch;
+    /* 텍스트 크기 조정 방지 (iOS) */
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* 입력 가능한 요소는 선택 가능하도록 */
+  input, textarea {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+
+  /* 버튼과 클릭 가능한 요소 터치 최적화 */
+  button, a, [role="button"] {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+}
+
+@layer components {
+  /* 아이들을 위한 큰 버튼 스타일 - 모바일 최적화 */
+  .btn-primary {
+    @apply px-6 py-4 text-lg md:px-8 md:py-4 md:text-xl font-bold rounded-full shadow-lg 
+           bg-gradient-to-r from-blue-500 to-purple-500 text-white
+           hover:from-blue-600 hover:to-purple-600 
+           active:scale-95 active:opacity-80 transform transition-all duration-200
+           disabled:opacity-50 disabled:cursor-not-allowed
+           min-h-[56px] touch-manipulation;
+    /* 모바일 터치 최적화 - 최소 터치 영역 44px x 44px 보장 */
+    min-height: 56px;
+    /* 터치 이벤트 최적화 */
+    touch-action: manipulation;
+    /* iOS 터치 하이라이트 제거 */
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .btn-secondary {
+    @apply px-5 py-3 text-base md:px-6 md:py-3 md:text-lg font-semibold rounded-full shadow-md
+           bg-white text-blue-600 border-2 border-blue-500
+           hover:bg-blue-50 active:scale-95 active:opacity-80 transform transition-all duration-200
+           min-h-[48px] touch-manipulation;
+    /* 모바일 터치 최적화 */
+    min-height: 48px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* 카드 스타일 - 모바일 최적화 */
+  .card {
+    @apply bg-white rounded-2xl md:rounded-3xl shadow-xl p-4 md:p-6 transition-all duration-300
+           hover:shadow-2xl hover:scale-105;
+    /* 모바일에서 터치 피드백 */
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.05);
+  }
+
+  /* 모바일에서 hover 효과 비활성화 */
+  @media (hover: none) {
+    .card:hover {
+      transform: none;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+  }
+
+  /* 알파벳 카드 애니메이션 */
+  @keyframes bounce-in {
+    0% {
+      transform: scale(0);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.1);
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  .alphabet-card {
+    animation: bounce-in 0.5s ease-out;
+  }
+}
+

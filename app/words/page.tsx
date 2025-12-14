@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { alphabetData, type AlphabetData, type Word } from '@/lib/alphabetData';
-import { speakText } from '@/lib/tts';
+import { speakText, isSamsungBrowser } from '@/lib/tts';
 
 export default function WordsPage() {
   const [selectedLetter, setSelectedLetter] = useState<AlphabetData | null>(null);
@@ -21,7 +21,10 @@ export default function WordsPage() {
 
   const handleWordClick = (word: Word) => {
     setSelectedWord(word);
-    speakText(word.word);
+    const success = speakText(word.word);
+    if (!success && isSamsungBrowser()) {
+      // 삼성 브라우저에서는 조용히 실패 (경고는 상단 배너에서 표시됨)
+    }
   };
 
   return (
@@ -128,7 +131,10 @@ export default function WordsPage() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          speakText(word.word);
+                          const success = speakText(word.word);
+                          if (!success && isSamsungBrowser()) {
+                            // 삼성 브라우저에서는 조용히 실패 (경고는 상단 배너에서 표시됨)
+                          }
                         }}
                         className="px-3 sm:px-4 py-2 bg-blue-500 text-white rounded-full active:bg-blue-600 transition-colors min-h-[44px] touch-manipulation text-sm sm:text-base"
                         style={{ WebkitTapHighlightColor: 'transparent' }}

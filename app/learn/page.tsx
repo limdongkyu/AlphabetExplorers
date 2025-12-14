@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { alphabetData, saveProgress, getLetterProgress, type AlphabetData } from '@/lib/alphabetData';
-import { speakText, stopSpeaking } from '@/lib/tts';
+import { speakText, stopSpeaking, isSamsungBrowser } from '@/lib/tts';
 
 export default function LearnPage() {
   const [currentLetterIndex, setCurrentLetterIndex] = useState(0);
@@ -23,11 +23,17 @@ export default function LearnPage() {
   };
 
   const handleSpeakLetter = (letter: string) => {
-    speakText(letter);
+    const success = speakText(letter);
+    if (!success && isSamsungBrowser()) {
+      // 삼성 브라우저에서는 조용히 실패 (경고는 상단 배너에서 표시됨)
+    }
   };
 
   const handleSpeakName = (name: string) => {
-    speakText(name);
+    const success = speakText(name);
+    if (!success && isSamsungBrowser()) {
+      // 삼성 브라우저에서는 조용히 실패 (경고는 상단 배너에서 표시됨)
+    }
   };
 
   const handleComplete = () => {
@@ -154,7 +160,12 @@ export default function LearnPage() {
                 {currentLetter.words.map((word, index) => (
                   <button
                     key={index}
-                    onClick={() => speakText(word.word)}
+                    onClick={() => {
+                      const success = speakText(word.word);
+                      if (!success && isSamsungBrowser()) {
+                        // 삼성 브라우저에서는 조용히 실패 (경고는 상단 배너에서 표시됨)
+                      }
+                    }}
                     className="card p-3 md:p-4 active:scale-95 transition-transform text-center touch-manipulation min-h-[140px] sm:min-h-[160px]"
                     style={{ WebkitTapHighlightColor: 'transparent' }}
                   >

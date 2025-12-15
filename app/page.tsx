@@ -1,12 +1,15 @@
 'use client';
 
 import { resetProgress } from '@/lib/alphabetData';
+import { getThemeStyles, useTheme } from '@/lib/theme';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 export default function Home() {
   const [progress, setProgress] = useState(0);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const { theme, setTheme } = useTheme();
+  const themeStyles = getThemeStyles(theme);
 
   const loadProgress = () => {
     // LocalStorage에서 진행 상황 불러오기
@@ -34,7 +37,10 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 md:p-6 safe-area-inset">
+    <div 
+      className="min-h-screen flex flex-col items-center justify-center p-4 md:p-6 safe-area-inset transition-all duration-500"
+      style={{ background: themeStyles.background }}
+    >
       <div className="text-center mb-8 md:mb-12">
         <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-3 md:mb-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
           알파벳 탐험대
@@ -132,12 +138,52 @@ export default function Home() {
         </Link>
       </div>
 
+      {/* 테마 전환 버튼 */}
+      <div className="mt-8 mb-4">
+        <div className="flex items-center gap-3 bg-white/90 dark:bg-gray-800/90 rounded-full px-4 py-2 shadow-lg">
+          <span className="text-base md:text-lg font-bold" style={{ color: '#fbbf24' }}>
+            테마:
+          </span>
+          <button
+            onClick={() => setTheme('default')}
+            className={`px-4 py-2 rounded-full font-semibold text-sm transition-all ${
+              theme === 'default'
+                ? 'bg-blue-500 text-white shadow-md scale-105'
+                : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+            }`}
+          >
+            기본 모드
+          </button>
+          {/* 스타크래프트 테마는 일시적으로 비활성화 */}
+          {/* <button
+            onClick={() => setTheme('starcraft')}
+            className={`px-4 py-2 rounded-full font-semibold text-sm transition-all ${
+              theme === 'starcraft'
+                ? 'bg-cyan-500 text-white shadow-md scale-105'
+                : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+            }`}
+          >
+            🎮 스타크래프트
+          </button> */}
+          <button
+            onClick={() => setTheme('pokemon')}
+            className={`px-4 py-2 rounded-full font-semibold text-sm transition-all ${
+              theme === 'pokemon'
+                ? 'bg-yellow-400 text-white shadow-md scale-105'
+                : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+            }`}
+          >
+            ⚡ 포켓몬스터
+          </button>
+        </div>
+      </div>
+
       {/* 하단 장식 요소 */}
-      <div className="mt-16 text-center text-gray-500">
-        <p className="text-sm mb-2">
+      <div className="mt-8 text-center" style={{ color: themeStyles.textColor }}>
+        <p className="text-base md:text-lg font-semibold mb-3 opacity-90">
           함께 배우면 더 즐거워요! 😊
         </p>
-        <p className="text-xs text-gray-400">
+        <p className="text-sm md:text-base font-medium opacity-80">
           © {new Date().getFullYear()} jisubpapa
         </p>
       </div>

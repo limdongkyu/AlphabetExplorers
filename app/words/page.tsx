@@ -3,17 +3,27 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { alphabetData, type AlphabetData, type Word } from '@/lib/alphabetData';
+import { starcraftAlphabetData } from '@/lib/starcraftData';
+import { pokemonAlphabetData } from '@/lib/pokemonData';
+import { useTheme, getThemeStyles } from '@/lib/theme';
 import { speakText, isSamsungBrowser } from '@/lib/tts';
 
 export default function WordsPage() {
+  const { theme } = useTheme();
+  const themeStyles = getThemeStyles(theme);
+  const currentAlphabetData = 
+    theme === 'starcraft' ? starcraftAlphabetData : 
+    theme === 'pokemon' ? pokemonAlphabetData : 
+    alphabetData;
+  
   const [selectedLetter, setSelectedLetter] = useState<AlphabetData | null>(null);
   const [selectedWord, setSelectedWord] = useState<Word | null>(null);
   const [visibleCount, setVisibleCount] = useState<number>(6); // 초기 6개 표시
 
   useEffect(() => {
     // 첫 번째 알파벳 자동 선택
-    setSelectedLetter(alphabetData[0]);
-  }, []);
+    setSelectedLetter(currentAlphabetData[0]);
+  }, [theme]);
 
   // 알파벳 변경 시 표시 개수 초기화
   useEffect(() => {
@@ -35,7 +45,10 @@ export default function WordsPage() {
   };
 
   return (
-    <div className="min-h-screen p-3 md:p-4 lg:p-8 safe-area-inset">
+    <div 
+      className="min-h-screen p-3 md:p-4 lg:p-8 safe-area-inset transition-all duration-500"
+      style={{ background: themeStyles.background }}
+    >
       {/* 헤더 */}
       <div className="mb-4 md:mb-6">
         <Link href="/" className="inline-block mb-3 md:mb-4">
@@ -56,7 +69,7 @@ export default function WordsPage() {
         <div className="mb-6 md:mb-8">
           <h2 className="text-xl sm:text-2xl font-bold mb-3 md:mb-4 text-center">알파벳 선택</h2>
           <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-2 md:gap-3">
-            {alphabetData.map((letter) => {
+            {currentAlphabetData.map((letter) => {
               const isSelected = selectedLetter?.uppercase === letter.uppercase;
 
               return (
@@ -126,9 +139,28 @@ export default function WordsPage() {
                       }
                     }}
                   >
-                    {/* 이모지 */}
-                    <div className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl mb-3 md:mb-4 transform transition-transform active:scale-110">
-                      {word.emoji}
+                    {/* 이모지 또는 이미지 */}
+                    <div className="mb-3 md:mb-4 transform transition-transform active:scale-110 flex items-center justify-center">
+                      {word.imageUrl ? (
+                        <img
+                          src={word.imageUrl}
+                          alt={word.word}
+                          className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 object-contain"
+                          onError={(e) => {
+                            // 이미지 로드 실패 시 이모지로 대체
+                            const target = e.target as HTMLImageElement;
+                            target.style.display = 'none';
+                            const emojiDiv = target.nextElementSibling as HTMLElement;
+                            if (emojiDiv) emojiDiv.style.display = 'block';
+                          }}
+                        />
+                      ) : null}
+                      <div 
+                        className={`text-5xl sm:text-6xl md:text-7xl lg:text-8xl ${word.imageUrl ? 'hidden' : ''}`}
+                        style={{ display: word.imageUrl ? 'none' : 'block' }}
+                      >
+                        {word.emoji}
+                      </div>
                     </div>
 
                     {/* 영어 단어 */}

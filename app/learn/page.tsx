@@ -3,9 +3,19 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { alphabetData, saveProgress, getLetterProgress, type AlphabetData } from '@/lib/alphabetData';
+import { starcraftAlphabetData } from '@/lib/starcraftData';
+import { pokemonAlphabetData } from '@/lib/pokemonData';
+import { useTheme, getThemeStyles } from '@/lib/theme';
 import { speakText, stopSpeaking, isSamsungBrowser } from '@/lib/tts';
 
 export default function LearnPage() {
+  const { theme } = useTheme();
+  const themeStyles = getThemeStyles(theme);
+  const currentAlphabetData = 
+    theme === 'starcraft' ? starcraftAlphabetData : 
+    theme === 'pokemon' ? pokemonAlphabetData : 
+    alphabetData;
+  
   const [currentLetterIndex, setCurrentLetterIndex] = useState(0);
   const [selectedLetter, setSelectedLetter] = useState<AlphabetData | null>(null);
   const [showDetail, setShowDetail] = useState(false);
@@ -13,8 +23,8 @@ export default function LearnPage() {
 
   useEffect(() => {
     // 첫 번째 알파벳 자동 선택
-    setSelectedLetter(alphabetData[0]);
-  }, []);
+    setSelectedLetter(currentAlphabetData[0]);
+  }, [theme]);
 
   const handleLetterClick = (letter: AlphabetData, index: number) => {
     setSelectedLetter(letter);
@@ -22,6 +32,18 @@ export default function LearnPage() {
     setShowDetail(true);
     setVisibleWordCount(6); // 알파벳 변경 시 6개로 초기화
     stopSpeaking(); // 이전 음성 중단
+  };
+
+  const handleNext = () => {
+    if (currentLetterIndex < currentAlphabetData.length - 1) {
+      handleLetterClick(currentAlphabetData[currentLetterIndex + 1], currentLetterIndex + 1);
+    }
+  };
+
+  const handlePrev = () => {
+    if (currentLetterIndex > 0) {
+      handleLetterClick(currentAlphabetData[currentLetterIndex - 1], currentLetterIndex - 1);
+    }
   };
 
   const handleSpeakLetter = (letter: string) => {
@@ -48,10 +70,13 @@ export default function LearnPage() {
     }
   };
 
-  const currentLetter = selectedLetter || alphabetData[currentLetterIndex];
+  const currentLetter = selectedLetter || currentAlphabetData[currentLetterIndex];
 
   return (
-    <div className="min-h-screen p-3 md:p-4 lg:p-8 safe-area-inset">
+    <div 
+      className="min-h-screen p-3 md:p-4 lg:p-8 safe-area-inset transition-all duration-500"
+      style={{ background: themeStyles.background }}
+    >
       {/* 헤더 */}
       <div className="mb-4 md:mb-6">
         <Link href="/" className="inline-block mb-3 md:mb-4">
@@ -70,7 +95,7 @@ export default function LearnPage() {
       {/* 알파벳 그리드 */}
       <div className="max-w-6xl mx-auto mb-6 md:mb-8">
         <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-2 sm:gap-3 md:gap-4">
-          {alphabetData.map((letter, index) => {
+          {currentAlphabetData.map((letter, index) => {
             const progress = getLetterProgress(letter.uppercase);
             const isCompleted = progress.completed;
             const isCurrent = selectedLetter?.uppercase === letter.uppercase;
@@ -171,7 +196,24 @@ export default function LearnPage() {
                     className="card p-3 md:p-4 active:scale-95 transition-transform text-center touch-manipulation min-h-[140px] sm:min-h-[160px]"
                     style={{ WebkitTapHighlightColor: 'transparent' }}
                   >
-                    <div className="text-4xl sm:text-5xl mb-2">{word.emoji}</div>
+                    {word.imageUrl ? (
+                      <div className="mb-2 flex items-center justify-center">
+                        <img
+                          src={word.imageUrl}
+                          alt={word.word}
+                          className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.style.display = 'none';
+                            const emojiDiv = target.nextElementSibling as HTMLElement;
+                            if (emojiDiv) emojiDiv.style.display = 'block';
+                          }}
+                        />
+                        <div className="text-4xl sm:text-5xl hidden">{word.emoji}</div>
+                      </div>
+                    ) : (
+                      <div className="text-4xl sm:text-5xl mb-2">{word.emoji}</div>
+                    )}
                     <div className="text-lg sm:text-xl font-bold text-blue-600 mb-1">
                       {word.word}
                     </div>
@@ -211,23 +253,15 @@ export default function LearnPage() {
             {/* 이전/다음 버튼 */}
             <div className="mt-6 flex justify-between">
               <button
-                onClick={() => {
-                  if (currentLetterIndex > 0) {
-                    handleLetterClick(alphabetData[currentLetterIndex - 1], currentLetterIndex - 1);
-                  }
-                }}
+                onClick={handlePrev}
                 disabled={currentLetterIndex === 0}
                 className="btn-secondary disabled:opacity-50"
               >
                 ← 이전
               </button>
               <button
-                onClick={() => {
-                  if (currentLetterIndex < alphabetData.length - 1) {
-                    handleLetterClick(alphabetData[currentLetterIndex + 1], currentLetterIndex + 1);
-                  }
-                }}
-                disabled={currentLetterIndex === alphabetData.length - 1}
+                onClick={handleNext}
+                disabled={currentLetterIndex === currentAlphabetData.length - 1}
                 className="btn-secondary disabled:opacity-50"
               >
                 다음 →

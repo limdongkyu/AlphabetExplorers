@@ -3,6 +3,7 @@ export interface Word {
   word: string; // 영어 단어
   korean: string; // 한국어 뜻
   emoji: string; // 시각적 표시용 이모지
+  imageUrl?: string; // 이미지 URL (선택적, 스타크래프트 테마용)
 }
 
 export interface AlphabetData {

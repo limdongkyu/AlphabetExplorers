@@ -3,13 +3,28 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { alphabetData, saveProgress, getLetterProgress, type AlphabetData } from '@/lib/alphabetData';
+import { starcraftAlphabetData } from '@/lib/starcraftData';
+import { pokemonAlphabetData } from '@/lib/pokemonData';
+import { useTheme, getThemeStyles } from '@/lib/theme';
 import CanvasDrawing from '@/components/CanvasDrawing';
 
 export default function PracticePage() {
-  const [currentLetter, setCurrentLetter] = useState<AlphabetData>(alphabetData[0]);
+  const { theme } = useTheme();
+  const themeStyles = getThemeStyles(theme);
+  const currentAlphabetData = 
+    theme === 'starcraft' ? starcraftAlphabetData : 
+    theme === 'pokemon' ? pokemonAlphabetData : 
+    alphabetData;
+  
+  const [currentLetter, setCurrentLetter] = useState<AlphabetData>(currentAlphabetData[0]);
   const [currentLetterIndex, setCurrentLetterIndex] = useState(0);
   const [practiceType, setPracticeType] = useState<'uppercase' | 'lowercase'>('uppercase');
   const [practiceCount, setPracticeCount] = useState(0);
+
+  useEffect(() => {
+    setCurrentLetter(currentAlphabetData[0]);
+    setCurrentLetterIndex(0);
+  }, [theme]);
 
   const handleLetterSelect = (letter: AlphabetData, index: number) => {
     setCurrentLetter(letter);
@@ -31,7 +46,10 @@ export default function PracticePage() {
   const progress = getLetterProgress(currentLetter.uppercase);
 
   return (
-    <div className="min-h-screen p-3 md:p-4 lg:p-8 safe-area-inset">
+    <div 
+      className="min-h-screen p-3 md:p-4 lg:p-8 safe-area-inset transition-all duration-500"
+      style={{ background: themeStyles.background }}
+    >
       {/* 헤더 */}
       <div className="mb-4 md:mb-6">
         <Link href="/" className="inline-block mb-3 md:mb-4">
@@ -52,7 +70,7 @@ export default function PracticePage() {
         <div className="mb-6 md:mb-8">
           <h2 className="text-xl sm:text-2xl font-bold mb-3 md:mb-4 text-center">알파벳 선택</h2>
           <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-2 md:gap-3">
-            {alphabetData.map((letter, index) => {
+            {currentAlphabetData.map((letter, index) => {
               const letterProgress = getLetterProgress(letter.uppercase);
               const isSelected = currentLetter.uppercase === letter.uppercase;
 
@@ -149,7 +167,7 @@ export default function PracticePage() {
           <button
             onClick={() => {
               if (currentLetterIndex > 0) {
-                handleLetterSelect(alphabetData[currentLetterIndex - 1], currentLetterIndex - 1);
+                handleLetterSelect(currentAlphabetData[currentLetterIndex - 1], currentLetterIndex - 1);
               }
             }}
             disabled={currentLetterIndex === 0}
@@ -159,11 +177,11 @@ export default function PracticePage() {
           </button>
           <button
             onClick={() => {
-              if (currentLetterIndex < alphabetData.length - 1) {
-                handleLetterSelect(alphabetData[currentLetterIndex + 1], currentLetterIndex + 1);
+              if (currentLetterIndex < currentAlphabetData.length - 1) {
+                handleLetterSelect(currentAlphabetData[currentLetterIndex + 1], currentLetterIndex + 1);
               }
             }}
-            disabled={currentLetterIndex === alphabetData.length - 1}
+            disabled={currentLetterIndex === currentAlphabetData.length - 1}
             className="btn-secondary disabled:opacity-50"
           >
             다음 알파벳 →

@@ -8,15 +8,22 @@ import { speakText, isSamsungBrowser } from '@/lib/tts';
 export default function WordsPage() {
   const [selectedLetter, setSelectedLetter] = useState<AlphabetData | null>(null);
   const [selectedWord, setSelectedWord] = useState<Word | null>(null);
+  const [visibleCount, setVisibleCount] = useState<number>(6); // 초기 6개 표시
 
   useEffect(() => {
     // 첫 번째 알파벳 자동 선택
     setSelectedLetter(alphabetData[0]);
   }, []);
 
+  // 알파벳 변경 시 표시 개수 초기화
+  useEffect(() => {
+    setVisibleCount(6);
+  }, [selectedLetter]);
+
   const handleLetterClick = (letter: AlphabetData) => {
     setSelectedLetter(letter);
     setSelectedWord(null);
+    setVisibleCount(6); // 알파벳 변경 시 6개로 초기화
   };
 
   const handleWordClick = (word: Word) => {
@@ -94,22 +101,30 @@ export default function WordsPage() {
 
             {/* 단어 카드들 */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 lg:gap-6">
-              {selectedLetter.words.map((word, index) => {
+              {selectedLetter.words.slice(0, Math.min(visibleCount, 30)).map((word, index) => {
                 const isSelected = selectedWord?.word === word.word;
 
                 return (
-                  <button
+                  <div
                     key={index}
                     onClick={() => handleWordClick(word)}
                     className={`
                       card p-4 md:p-6 text-center transition-all duration-300 min-h-[200px] sm:min-h-[240px]
-                      active:scale-95 touch-manipulation
+                      active:scale-95 touch-manipulation cursor-pointer
                       ${isSelected 
                         ? 'ring-2 sm:ring-4 ring-pink-500 scale-100 sm:scale-105 bg-gradient-to-br from-pink-50 to-orange-50' 
                         : 'active:shadow-2xl'
                       }
                     `}
                     style={{ WebkitTapHighlightColor: 'transparent' }}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleWordClick(word);
+                      }
+                    }}
                   >
                     {/* 이모지 */}
                     <div className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl mb-3 md:mb-4 transform transition-transform active:scale-110">
@@ -142,10 +157,27 @@ export default function WordsPage() {
                         🔊 듣기
                       </button>
                     </div>
-                  </button>
+                  </div>
                 );
               })}
             </div>
+
+            {/* 더보기 버튼 */}
+            {selectedLetter.words.length > visibleCount && visibleCount < 30 && (
+              <div className="text-center mt-6 md:mt-8">
+                <button
+                  onClick={() => {
+                    // 6개씩 추가하되 최대 30개까지만
+                    const nextCount = Math.min(visibleCount + 6, 30);
+                    setVisibleCount(nextCount);
+                  }}
+                  className="px-6 md:px-8 py-3 md:py-4 bg-gradient-to-r from-pink-500 to-orange-500 text-white rounded-full font-bold text-lg md:text-xl hover:from-pink-600 hover:to-orange-600 transition-all active:scale-95 touch-manipulation shadow-lg"
+                  style={{ WebkitTapHighlightColor: 'transparent' }}
+                >
+                  더보기 ({Math.min(selectedLetter.words.length - visibleCount, 30 - visibleCount)}개 더 보기)
+                </button>
+              </div>
+            )}
           </div>
         )}
 

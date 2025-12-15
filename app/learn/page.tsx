@@ -9,6 +9,7 @@ export default function LearnPage() {
   const [currentLetterIndex, setCurrentLetterIndex] = useState(0);
   const [selectedLetter, setSelectedLetter] = useState<AlphabetData | null>(null);
   const [showDetail, setShowDetail] = useState(false);
+  const [visibleWordCount, setVisibleWordCount] = useState<number>(6); // 초기 6개 표시
 
   useEffect(() => {
     // 첫 번째 알파벳 자동 선택
@@ -19,6 +20,7 @@ export default function LearnPage() {
     setSelectedLetter(letter);
     setCurrentLetterIndex(index);
     setShowDetail(true);
+    setVisibleWordCount(6); // 알파벳 변경 시 6개로 초기화
     stopSpeaking(); // 이전 음성 중단
   };
 
@@ -157,7 +159,7 @@ export default function LearnPage() {
                 {currentLetter.uppercase}로 시작하는 단어들
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
-                {currentLetter.words.map((word, index) => (
+                {currentLetter.words.slice(0, Math.min(visibleWordCount, 30)).map((word, index) => (
                   <button
                     key={index}
                     onClick={() => {
@@ -177,6 +179,23 @@ export default function LearnPage() {
                   </button>
                 ))}
               </div>
+
+              {/* 더보기 버튼 */}
+              {currentLetter.words.length > visibleWordCount && visibleWordCount < 30 && (
+                <div className="text-center mt-6 md:mt-8">
+                  <button
+                    onClick={() => {
+                      // 6개씩 추가하되 최대 30개까지만
+                      const nextCount = Math.min(visibleWordCount + 6, 30);
+                      setVisibleWordCount(nextCount);
+                    }}
+                    className="px-6 md:px-8 py-3 md:py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full font-bold text-lg md:text-xl hover:from-blue-600 hover:to-purple-600 transition-all active:scale-95 touch-manipulation shadow-lg"
+                    style={{ WebkitTapHighlightColor: 'transparent' }}
+                  >
+                    더보기 ({Math.min(currentLetter.words.length - visibleWordCount, 30 - visibleWordCount)}개 더 보기)
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* 완료 버튼 */}

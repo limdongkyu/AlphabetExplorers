@@ -28,21 +28,72 @@ const speakWithWebSpeech = (text: string, lang: string = 'en-US'): boolean => {
     // 이전 음성 중단
     window.speechSynthesis.cancel();
 
+    // 음성 엔진이 준비될 때까지 잠시 대기 (일부 브라우저에서 필요)
+    // 이미 말하고 있으면 바로 진행
+    if (window.speechSynthesis.speaking) {
+      window.speechSynthesis.cancel();
+    }
+
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = lang;
     utterance.rate = 0.8; // 조금 느리게 (아이들을 위해)
     utterance.pitch = 1.0;
     utterance.volume = 1.0;
 
-    // 에러 핸들링
-    utterance.onerror = (event) => {
-      console.error('Web Speech API error:', event);
+    // 에러 핸들링 (더 자세한 정보 추출)
+    utterance.onerror = (event: SpeechSynthesisErrorEvent | Event) => {
+      // SpeechSynthesisErrorEvent 타입 체크
+      const synthEvent = event as SpeechSynthesisErrorEvent;
+      
+      // 에러 정보 수집 (타입 안전하게)
+      const errorInfo: {
+        error?: string;
+        type: string;
+        charIndex?: number;
+        charLength?: number;
+        elapsedTime?: number;
+        name?: string;
+      } = {
+        type: synthEvent.type || 'error',
+      };
+      
+      // SpeechSynthesisErrorEvent의 속성들 (타입이 있을 때만)
+      if ('error' in synthEvent) {
+        errorInfo.error = synthEvent.error || 'unknown';
+      }
+      if ('charIndex' in synthEvent && synthEvent.charIndex !== undefined) {
+        errorInfo.charIndex = synthEvent.charIndex;
+      }
+      if ('charLength' in synthEvent && synthEvent.charLength !== undefined) {
+        errorInfo.charLength = synthEvent.charLength;
+      }
+      if ('elapsedTime' in synthEvent && synthEvent.elapsedTime !== undefined) {
+        errorInfo.elapsedTime = synthEvent.elapsedTime;
+      }
+      if ('name' in synthEvent) {
+        errorInfo.name = synthEvent.name;
+      }
+      
+      // 개발 환경에서만 상세 로그 출력
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('Web Speech API error (this is usually harmless):', errorInfo);
+      }
+      
+      // 일반적으로 'network' 에러는 무시해도 됨 (일부 브라우저에서 정상 동작 중에도 발생)
+      // 'not-allowed' 에러는 사용자가 권한을 거부한 경우
+      if ('error' in synthEvent && synthEvent.error === 'not-allowed') {
+        console.warn('Web Speech API: Permission denied by user');
+      }
     };
 
+    // 음성 재생 시작
     window.speechSynthesis.speak(utterance);
     return true;
   } catch (error) {
-    console.error('Web Speech API failed:', error);
+    // 개발 환경에서만 에러 로그 출력
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Web Speech API failed:', error);
+    }
     return false;
   }
 };

@@ -108,9 +108,6 @@ export const pokemonIdMap: Record<string, number> = {
   'Inkay': 686,
   'Inteleon': 818,
   'Incineroar': 727,
-  'Ivysaur': 2,
-  'Icy': 87,
-  'Iron': 374,
   
   // J
   'Jigglypuff': 39,
@@ -121,8 +118,6 @@ export const pokemonIdMap: Record<string, number> = {
   'Joltik': 595,
   'Jangmo-o': 782,
   'Jellicent': 593,
-  'Jumpluff': 189,
-  'Jigglypuff': 39,
   
   // K
   'Kadabra': 64,
@@ -170,7 +165,7 @@ export const pokemonIdMap: Record<string, number> = {
   'Nihilego': 793,
   'Noivern': 715,
   'Naganadel': 804,
-  'Ninetales': 38,
+  'Necrozma': 800,
   
   // O
   'Oddish': 43,
@@ -178,11 +173,9 @@ export const pokemonIdMap: Record<string, number> = {
   'Omastar': 139,
   'Onix': 95,
   'Octillery': 224,
-  'Oddish': 43,
   'Oshawott': 501,
   'Oranguru': 765,
   'Obstagoon': 862,
-  'Onix': 95,
   'Oricorio': 741,
   
   // P
@@ -246,8 +239,6 @@ export const pokemonIdMap: Record<string, number> = {
   'Ursaring': 217,
   'Unown': 201,
   'Ursaluna': 901,
-  'Umbreon': 197,
-  'Ursaring': 217,
   'Urshifu': 892,
   
   // V

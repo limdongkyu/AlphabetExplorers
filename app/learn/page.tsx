@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { alphabetData, saveProgress, getLetterProgress, type AlphabetData } from '@/lib/alphabetData';
 import { starcraftAlphabetData } from '@/lib/starcraftData';
 import { pokemonAlphabetData } from '@/lib/pokemonData';
+import { minecraftAlphabetData } from '@/lib/minecraftData';
 import { useTheme, getThemeStyles } from '@/lib/theme';
 import { speakText, stopSpeaking, isSamsungBrowser } from '@/lib/tts';
 
@@ -14,6 +15,7 @@ export default function LearnPage() {
   const currentAlphabetData = 
     theme === 'starcraft' ? starcraftAlphabetData : 
     theme === 'pokemon' ? pokemonAlphabetData : 
+    theme === 'minecraft' ? minecraftAlphabetData :
     alphabetData;
   
   const [currentLetterIndex, setCurrentLetterIndex] = useState(0);

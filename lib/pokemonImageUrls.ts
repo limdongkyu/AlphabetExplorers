@@ -86,7 +86,7 @@ export const pokemonIdMap: Record<string, number> = {
   'Garchomp': 445,
   'Gallade': 475,
   'Giratina': 487,
-  'Garchomp': 445,
+  'Gyarados': 130,
   
   // H
   'Haunter': 93,
@@ -146,7 +146,7 @@ export const pokemonIdMap: Record<string, number> = {
   'Lycanroc': 745,
   'Litten': 725,
   'Lurantis': 754,
-  'Lucario': 448,
+  'Latias': 380,
   
   // M
   'Machamp': 68,
@@ -183,6 +183,7 @@ export const pokemonIdMap: Record<string, number> = {
   'Oranguru': 765,
   'Obstagoon': 862,
   'Onix': 95,
+  'Oricorio': 741,
   
   // P
   'Pikachu': 25,
@@ -200,10 +201,6 @@ export const pokemonIdMap: Record<string, number> = {
   'Quagsire': 195,
   'Quilava': 156,
   'Qwilfish': 211,
-  'Quagsire': 195,
-  'Quilava': 156,
-  'Qwilfish': 211,
-  'Quilfish': 211,
   'Quaxly': 912,
   'Quaxwell': 913,
   'Quaquaval': 914,
@@ -251,10 +248,7 @@ export const pokemonIdMap: Record<string, number> = {
   'Ursaluna': 901,
   'Umbreon': 197,
   'Ursaring': 217,
-  'Unown': 201,
   'Urshifu': 892,
-  'Umbreon': 197,
-  'Ursaluna': 901,
   
   // V
   'Vaporeon': 134,
@@ -284,20 +278,8 @@ export const pokemonIdMap: Record<string, number> = {
   'Xatu': 178,
   'Xerneas': 716,
   'Xurkitree': 796,
-  'Xatu': 178,
-  'Xerneas': 716,
-  'Xurkitree': 796,
-  'Xatu': 178,
-  'Xerneas': 716,
-  'Xurkitree': 796,
-  'Xatu': 178,
   
   // Y
-  'Yanma': 193,
-  'Yveltal': 717,
-  'Yamper': 835,
-  'Yanmega': 469,
-  'Yungoos': 734,
   'Yanma': 193,
   'Yveltal': 717,
   'Yamper': 835,
@@ -307,14 +289,14 @@ export const pokemonIdMap: Record<string, number> = {
   // Z
   'Zapdos': 145,
   'Zubat': 41,
-  'Zapdos': 145,
-  'Zubat': 41,
   'Zangoose': 335,
   'Zigzagoon': 263,
   'Zoroark': 571,
   'Zorua': 570,
   'Zygarde': 718,
   'Zacian': 888,
+  'Zamazenta': 889,
+  'Zekrom': 644,
 };
 
 // 포켓몬 이미지 URL 가져오기

@@ -3,7 +3,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 // 테마 타입 정의
-export type Theme = 'default' | 'starcraft' | 'pokemon';
+export type Theme = 'default' | 'starcraft' | 'pokemon' | 'minecraft';
 
 interface ThemeContextType {
   theme: Theme;
@@ -23,7 +23,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       if (savedTheme === 'starcraft') {
         setThemeState('default');
         localStorage.setItem('alphabetTheme', 'default');
-      } else if (savedTheme === 'default' || savedTheme === 'pokemon') {
+      } else if (savedTheme === 'default' || savedTheme === 'pokemon' || savedTheme === 'minecraft') {
         setThemeState(savedTheme);
       }
     }
@@ -70,6 +70,14 @@ export function getThemeStyles(theme: Theme) {
         primaryColor: '#ff6b6b',
         secondaryColor: '#4ecdc4',
         accentColor: '#ffe66d',
+      };
+    case 'minecraft':
+      return {
+        background: 'linear-gradient(135deg, #7cb342 0%, #8bc34a 50%, #9ccc65 100%)',
+        textColor: '#1f2937',
+        primaryColor: '#7cb342',
+        secondaryColor: '#8bc34a',
+        accentColor: '#9ccc65',
       };
     default:
       return {

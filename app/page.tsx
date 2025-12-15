@@ -175,6 +175,16 @@ export default function Home() {
           >
             ⚡ 포켓몬스터
           </button>
+          <button
+            onClick={() => setTheme('minecraft')}
+            className={`px-4 py-2 rounded-full font-semibold text-sm transition-all ${
+              theme === 'minecraft'
+                ? 'bg-green-500 text-white shadow-md scale-105'
+                : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+            }`}
+          >
+            🎮 마인크래프트
+          </button>
         </div>
       </div>
 

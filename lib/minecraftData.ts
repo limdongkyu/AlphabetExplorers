@@ -382,9 +382,6 @@ export const minecraftAlphabetData: AlphabetData[] = [
     words: [
       createMinecraftWord('Xp', '경험치', '✨'),
       createMinecraftWord('X-Ray', '엑스레이', '🔍'),
-      createMinecraftWord('Xp', '경험치', '✨'),
-      createMinecraftWord('X-Ray', '엑스레이', '🔍'),
-      createMinecraftWord('Xp', '경험치', '✨'),
     ],
   },
   {
@@ -394,9 +391,6 @@ export const minecraftAlphabetData: AlphabetData[] = [
     words: [
       createMinecraftWord('Yellow', '노란색', '🟡'),
       createMinecraftWord('Yarn', '실', '🧵'),
-      createMinecraftWord('Yellow', '노란색', '🟡'),
-      createMinecraftWord('Yarn', '실', '🧵'),
-      createMinecraftWord('Yellow', '노란색', '🟡'),
     ],
   },
   {
@@ -408,7 +402,6 @@ export const minecraftAlphabetData: AlphabetData[] = [
       createMinecraftWord('Zombie Pigman', '좀비 피그맨', '🧟'),
       createMinecraftWord('Zombie Villager', '좀비 주민', '🧟'),
       createMinecraftWord('Zombie Horse', '좀비 말', '🧟'),
-      createMinecraftWord('Zombie', '좀비', '🧟'),
     ],
   },
 ];

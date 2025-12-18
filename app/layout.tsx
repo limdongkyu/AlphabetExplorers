@@ -39,32 +39,31 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className="font-sans antialiased touch-pan-y">
-        {/* Google Analytics Consent Mode - 동의 전 기본 설정 */}
-        <Script id="google-analytics-consent" strategy="beforeInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            
-            // 동의 상태 확인 (클라이언트 측에서 확인)
-            // 기본적으로 거부 상태로 설정
-            gtag('consent', 'default', {
-              'analytics_storage': 'denied',
-              'ad_storage': 'denied',
-              'wait_for_update': 500,
-            });
-          `}
-        </Script>
-        
-        {/* Google Analytics - 동의 시에만 활성화 */}
+        {/* Google Analytics - 태그는 항상 로드하되 Consent Mode로 제어 */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-7NMEJZVEB1"
           strategy="afterInteractive"
         />
         <Script id="google-analytics" strategy="afterInteractive">
           {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
             
-            // 동의 상태에 따라 설정 업데이트
+            // Consent Mode 기본 설정 (거부 상태)
+            gtag('consent', 'default', {
+              'analytics_storage': 'denied',
+              'ad_storage': 'denied',
+              'wait_for_update': 2000, // 2초 대기 (동의 배너 확인 시간)
+            });
+            
+            // Analytics 설정 (태그는 항상 초기화 - Google Tag Assistant 감지용)
+            gtag('config', 'G-7NMEJZVEB1', {
+              'anonymize_ip': true, // IP 익명화 (GDPR 준수)
+              'send_page_view': false, // 동의 전에는 페이지뷰 전송 안 함
+            });
+            
+            // 동의 상태 확인 후 업데이트
             if (typeof window !== 'undefined') {
               const consent = localStorage.getItem('cookie-consent');
               if (consent === 'accepted') {
@@ -72,10 +71,12 @@ export default function RootLayout({
                   'analytics_storage': 'granted',
                   'ad_storage': 'denied',
                 });
+                // 동의 후 페이지뷰 전송 활성화
+                gtag('config', 'G-7NMEJZVEB1', {
+                  'send_page_view': true,
+                });
+                gtag('event', 'page_view');
               }
-              gtag('config', 'G-7NMEJZVEB1', {
-                'anonymize_ip': true, // IP 익명화 (GDPR 준수)
-              });
             }
           `}
         </Script>

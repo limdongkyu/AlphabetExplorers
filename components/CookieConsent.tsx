@@ -22,11 +22,20 @@ export default function CookieConsent() {
     localStorage.setItem('cookie-consent-date', new Date().toISOString());
     setShowBanner(false);
     
-    // Google Analytics 초기화 (동의 후)
+    // Google Analytics 동의 업데이트
     if (typeof window !== 'undefined' && window.gtag) {
       window.gtag('consent', 'update', {
         analytics_storage: 'granted',
         ad_storage: 'denied', // 광고는 사용하지 않으므로 거부
+      });
+      
+      // 동의 후 페이지뷰 전송 활성화 및 현재 페이지 전송
+      window.gtag('config', 'G-7NMEJZVEB1', {
+        send_page_view: true,
+      });
+      window.gtag('event', 'page_view', {
+        page_title: document.title,
+        page_location: window.location.href,
       });
     }
     
